@@ -1,4 +1,5 @@
-# Deprecation Warning
+# Coming soon!
+<!-- # Deprecation Warning
 
 This project was started at the advent of the Redux ecosystem, and was intended to help users get up and running quickly. Since then, tooling and best practices have evolved tremendously. In order to get the most modern experience possible, I recommend checking out something like [create-react-app](https://github.com/facebookincubator/create-react-app) which is supported by many core React and Redux developers.
 
@@ -178,4 +179,4 @@ This project wouldn't be possible without help from the community, so I'd like t
 * [Spencer Dixon](https://github.com/SpencerCDixon) - For your creation of [redux-cli](https://github.com/SpencerCDixon/redux-cli).
 * [Jonas Matser](https://github.com/mtsr) - For your help in triaging issues and unending support in our Gitter channel.
 
-And to everyone else who has contributed, even if you are not listed here your work is appreciated.
+And to everyone else who has contributed, even if you are not listed here your work is appreciated. -->
