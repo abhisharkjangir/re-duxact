@@ -40,46 +40,13 @@ export function whoIsInSpace() {
   }
 }
 
-export function whenWillPassThroughYou(coords) {
+
+export function whenWillPassThroughYou(c) {
   return function (dispatch) {
-    // let reqURL = {
-    //   "message": "success",
-    //   "request": {
-    //     "altitude": 100,
-    //     "datetime": 1505034416,
-    //     "latitude": 26.9124336,
-    //     "longitude": 75.7872709,
-    //     "passes": 5
-    //   },
-    //   "response": [{
-    //       "duration": 505,
-    //       "risetime": 1505066500
-    //     },
-    //     {
-    //       "duration": 631,
-    //       "risetime": 1505072206
-    //     },
-    //     {
-    //       "duration": 355,
-    //       "risetime": 1505078174
-    //     },
-    //     {
-    //       "duration": 435,
-    //       "risetime": 1505095877
-    //     },
-    //     {
-    //       "duration": 639,
-    //       "risetime": 1505101592
-    //     }
-    //   ]
-    // }
-    // console.log(reqURL)
-    // dispatch({ type: SAVE_WHEN_WILL_PASS_THROUGH, payload: reqURL })
-    return fetch(`http://api.open-notify.org/iss-pass.json?lat=${coords.lat}&lon=${coords.long}&n=10`).then((response) => {
+    return fetch(`http://api.open-notify.org/iss-pass.json?lat=${c.lat}&lon=${c.long}`,{mode: 'cors'})
+    .then((response) => {
       response.json().then(json => {
-        if(json.message === 'success')
         dispatch({ type: SAVE_WHEN_WILL_PASS_THROUGH, payload: json })
-        else console.log(json);
       })
     }).catch(error => {
       throw(error);
