@@ -1,9 +1,10 @@
 import React from 'react'
 import './HomeView.scss'
+import { IndexLink, Link } from 'react-router'
 
 export const HomeView = () => (
   <div>
-    <h4>Welcome!</h4>
+    <Link to='map'>Map</Link>
   </div>
 )
 

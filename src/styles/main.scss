@@ -19,3 +19,13 @@ body {
 *:after {
   box-sizing: inherit;
 }
+
+.leaflet-popup-content-wrapper{
+  border-radius:  0px!important;
+  color: #fff;
+  background-color: #000;
+}
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip{
+  background: #000;
+}
