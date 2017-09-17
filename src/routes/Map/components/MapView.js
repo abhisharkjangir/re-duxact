@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Map, Marker, Popup, TileLayer, FeatureGroup, GeoJSON} from 'react-leaflet';
 import L from 'leaflet';
 import './Map.scss'
 import SSicon from './ss.svg'
@@ -65,7 +65,96 @@ class MapView extends Component {
     setInterval(this.props.initISSPosition, 5000)
   }
 
+  layerMount (gl, id, metadata) {
+    if (!gl) return
+    // window.layers[id] = gl.leafletElement
+    // Set layers in Indra Store
+    // this.props.indraStore.getIndraStore().layers[id] = gl.leafletElement
+    // Bring CENTERLINE to BACK of All layers
+    if (id === 'CL') gl.leafletElement.bringToBack()
+    // If METADATA is Not DEFINED POPUP WON't be Shown (eg. CENTERLINE)
+    if (metadata) {
+      gl.leafletElement.eachLayer(c => {
+        c.bindPopup(TooltipBuilder(metadata, c.feature.properties), { className: 'tooltip-styles', maxWidth:500 })
+      })
+    }
+
+    gl.leafletElement.eachLayer(c => {
+      if (c.feature.geometry.type !== 'LineString') {
+        c.feature.properties.ImgUrl && c.setIcon(L.icon({
+          iconUrl: c.feature.properties.ImgUrl,
+          iconSize: [20, 20],
+          shadowSize: [0, 0]
+        }))
+        c.feature.properties.divIcon && c.setIcon(L.divIcon({
+          html: c.feature.properties.divIcon,
+          iconSize: [10, 10]
+        }))
+      }
+
+      if (c.feature.geometry.type === 'LineString') {
+        if (c.feature.properties.FeatureColour) c.setStyle({ color:c.feature.properties.FeatureColour || metadata.defaultFeatureColour, stroke:2, opacity:1 })
+      }
+    })
+    /*
+    The Logic below is used for zoom based Label Show, defining symbology according to zoom level
+    */
+    // this.leafletMap.on('zoom', function (e) {
+    //   if (e.target._zoom > 16) {
+    //     gl.leafletElement.eachLayer(c => {
+    //       if (c.feature.geometry.type === 'Point') {
+    //         c.feature.properties.ImgUrl && c.setIcon(L.divIcon({
+    //           html: `<img src=${c.feature.properties.ImgUrl} height='20px' width='20px' align='center'/><p>${c.feature.properties.JointNumber}</p>`, //eslint-disable-line
+    //           iconSize: [20, 20]
+    //         }))
+    //       } else {
+    //         c.bindTooltip(LabelBuilder(metadata, c.feature.properties))
+    //       }
+    //     })
+    //   }
+    //
+    //   if (e.target._zoom < 16) {
+    //     gl.leafletElement.eachLayer(c => {
+    //       if (c.feature.geometry.type === 'Point') {
+    //         c.feature.properties.ImgUrl && c.setIcon(L.icon({
+    //           iconUrl: c.feature.properties.ImgUrl,
+    //           iconSize: [20, 20],
+    //           shadowSize: [0, 0]
+    //         }))
+    //       } else {
+    //         c.unbindTooltip()
+    //       }
+    //     })
+    //   }
+    // })
+  }
+
+  // featureGroup (fg) {
+  //   if (!fg) return
+  //   window.featureGroup = fg.leafletElement
+  //   this.leafletFeatureGroup = fg.leafletElement
+  //   // this.leafletMap.fitBounds(this.leafletFeatureGroup.getBounds())
+  //   this.leafletFeatureGroup.on('layeradd', () => this.leafletMap.fitBounds(this.leafletFeatureGroup.getBounds()))
+  //   this.leafletFeatureGroup.on('layerremove',
+  //     () => this.props.layers.filter(x => x.on).length &&
+  //     this.leafletMap.fitBounds(this.leafletFeatureGroup.getBounds())
+  //   )
+  // }
+
   render() {
+    let layer = {"type": "FeatureCollection",
+    "features": [
+      {
+      "type": "Feature",
+      "properties": {
+
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": this.props.map.line
+      }
+    }]}
+    // console.log(this.props.map.line);
     return(
       <div>
         <div className="basemap">
@@ -105,11 +194,15 @@ class MapView extends Component {
             }
           </div>
         }
-        <Map center={this.props.map.position} style={{'height' : '100vh'}} zoom={2}>
+        <Map center={[0,0]} style={{'height' : '100vh'}} zoom={2}>
           <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url={this.props.map.basemap}
           />
+          <FeatureGroup color='yellow'>
+            {this.props.map.loading && <GeoJSON data={layer}
+             />}
+          </FeatureGroup>
           <Marker position={this.props.map.position} icon={SSIcon}>
             <Popup>
               <span>
