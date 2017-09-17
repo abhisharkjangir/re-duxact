@@ -4,7 +4,8 @@ import { IndexLink, Link } from 'react-router'
 
 export const HomeView = () => (
   <div>
-    <Link to='map'>Map</Link>
+    <h1>Welcome!</h1>
+    <Link to='counter'>Go To Counter Example</Link>
   </div>
 )
 
